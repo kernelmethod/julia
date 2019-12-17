@@ -70,6 +70,16 @@ Language changes
 * The line number of function definitions is now added by the parser as an
   additional `LineNumberNode` at the start of each function body ([#35138]).
 
+Compiler/Runtime improvements
+-----------------------------
+
+* Immutable structs (including tuples) that contain references can now be allocated
+  on the stack, and allocated inline within arrays and other structs ([#33886]).
+  This significantly reduces the number of heap allocations in some workloads.
+  Code that requires assumptions about object layout and addresses (usually for
+  interoperability with C or other languages) might need to be updated; for
+  example any object that needs a stable address should be a `mutable struct`.
+
 Multi-threading changes
 -----------------------
 
