@@ -61,3 +61,10 @@ generic_map_tests(asyncmap, asyncmap!)
 run_map_equivalence_tests(asyncmap)
 using Base.Unicode: uppercase
 @test asyncmap(uppercase, "Hello World!") == map(uppercase, "Hello World!")
+
+# issue #37863
+# If asyncmap is run over a lazily-generated sequence, computation of
+# each element of the sequence should be deferred to the task that
+# applies the mapped function to it
+seq = ((sleep(1.0); objectid(current_task())) for _ = 1:10)
+@test allunique(asyncmap(identity, seq))
